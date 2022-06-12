@@ -45,7 +45,7 @@ def controleur(nb_bille_tot: mp.Value, pid: mp.Array):
     # on arrete tous les processus lorsque le nombre de billes est anormal
     for process in pid:
         os.kill(process, signal.SIGKILL)
-        os.kill(os.getppid(), signal.SIGKILL)
+    os.kill(os.getppid(), signal.SIGKILL)
 
 
 
