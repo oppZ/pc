@@ -1,5 +1,5 @@
 """
-Qui l a fait: LICI Tancrede & WLAZLOWSKI Mateusz
+Qui l'a fait: LICI Tancrede & WLAZLOWSKI Mateusz
 Quand: 07/06/2022
 """
 import multiprocessing as mp
@@ -91,6 +91,6 @@ if __name__ == "__main__":
         lst_prog.append(mp.Process(target=serveur, args=(i,)))
         lst_prog[-1].start()
 
-    printage = mp.Process(target=major_dhomme, args=(nb_serveurs, nb_clients))
+    printage = mp.Process(target=major_dhomme, args=(nb_serveurs,))
     printage.start()
     printage.join()

@@ -79,11 +79,17 @@ def un_cheval(verrou_fct: mp.Lock, pos_fct: mp.Array, ma_ligne: int, keep_runnin
 
     while col < LONGEUR_COURSE and keep_running.value:
         with verrou_fct:
-            move_to(ma_ligne + 1, col)  # pour effacer toute ma ligne
+            move_to(3 * ma_ligne + 1, col)  # pour effacer toute ma ligne
             erase_line_from_beg_to_curs()
+            print(" ______\/")
+            move_to(3 * ma_ligne + 2, col)  # pour effacer toute ma ligne
+            erase_line_from_beg_to_curs()
+            print("/___" + chr(ord('A') + ma_ligne) + "__/ ")
+            move_to(3 * ma_ligne + 3, col)  # pour effacer toute ma ligne
+            erase_line_from_beg_to_curs()
+            print(" /\  /\  ")
             en_couleur(lyst_colors[ma_ligne % len(lyst_colors)])
-            print('(' + chr(ord('A') + ma_ligne) + '>')
-
+            # print('(' + chr(ord('A') + ma_ligne) + '>')
             col += 1
             pos_fct[ma_ligne] = col
 
@@ -96,15 +102,15 @@ def un_cheval(verrou_fct: mp.Lock, pos_fct: mp.Array, ma_ligne: int, keep_runnin
 # ------------------------------------------------
 def prise_en_compte_signaux(signum, frame):
     # On vient ici en cas de CTRL-C p. ex.
-    move_to(Nb_process + 11, 1)
+    move_to(3 * Nb_process + 11, 1)
+    en_couleur(CL_WHITE)
     print(f"Il y a eu interruption No {signum} au clavier ..., on finit proprement")
 
     for i in range(Nb_process):
         mes_process[i].terminate()
 
-    move_to(Nb_process + 12, 1)
+    move_to(3 * Nb_process + 12, 1)
     curseur_visible()
-    en_couleur(CL_WHITE)
     print("Fini")
     sys.exit(0)
 
@@ -136,11 +142,11 @@ def arbitre_fct(verrou_fct: mp.Lock, pos_fct: mp.Array, pari: mp.Value) -> None:
                         dernier_trouve = True
                         break
 
-            move_to(len(pos_fct) + 1, 100)
+            move_to(3 * len(pos_fct) + 1, 100)
             erase_line_from_beg_to_curs()
             en_couleur(CL_WHITE)
-            move_to(len(pos_fct) + 1, 0)
-            print("Le premier est", chr(64 + premier_index), "et la grosse merde est", chr(64 + dernier_index))
+            move_to(3 * len(pos_fct) + 1, 0)
+            print("Le premier est", chr(64 + premier_index), "et le dernier est", chr(64 + dernier_index))
         time.sleep(.1)
     if pari.value == chr(64 + premier_index):
         print("Bien joué... mais vous n'avez rien gagne.")
@@ -161,11 +167,14 @@ if __name__ == "__main__":
 
     keep_running = mp.Value(ctypes.c_bool, True)
 
-    Nb_process = 20
+    Nb_process = 10  # Parametre modifiable
+
     mes_process = [0 for i in range(Nb_process)]
 
     signal.signal(signal.SIGINT, prise_en_compte_signaux)
     signal.signal(signal.SIGQUIT, prise_en_compte_signaux)
+
+    effacer_ecran()
 
     pari = mp.Value(ctypes.c_wchar, str(input("Sur quel canasson pariez-vous? ")))
 
@@ -182,13 +191,13 @@ if __name__ == "__main__":
     arbitre = mp.Process(target=arbitre_fct, args=(verrou, pos, pari))
     arbitre.start()
 
-    move_to(Nb_process + 10, 1)
+    move_to(3 * Nb_process + 10, 1)
     print("tous lancés, Controle-C pour tout arrêter")
 
     # On attend la fin de la course
     for i in range(Nb_process): mes_process[i].join()
     keep_running.value = False
 
-    move_to(Nb_process + 12, 1)
+    move_to(3 * Nb_process + 12, 1)
     curseur_visible()
     print("Fini")
