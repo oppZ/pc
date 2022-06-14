@@ -13,7 +13,7 @@ def effacer_ecran(): print(CLEARSCR, end='')  # Recupere de la course hippique
 
 def serveur(id_serveur: int) -> None:
     """
-    Serveur qui s occupant d une commande a la fois
+    Serveur ne s'occupant d'une commande a la fois
     """
     while True:
         time.sleep(1)
@@ -33,7 +33,7 @@ def serveur(id_serveur: int) -> None:
 
 def client(id_client: int) -> None:
     """
-    Client passant une commande a la fois
+    Client ne passant qu'une commande a la fois
     """
     while True:
         time.sleep(random.randint(1, 3))
